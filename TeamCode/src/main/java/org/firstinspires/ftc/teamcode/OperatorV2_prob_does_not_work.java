@@ -31,11 +31,11 @@ public class OperatorV2_prob_does_not_work extends LinearOpMode {
             objective.inputs(gamepad2);
             robot.telemetry.addData("Arm Position: ", robot.Arm.getCurrentPosition());
             robot.telemetry.update();
+
             if (robot.seeIfObject()) {
-                robot.led.setPosition(10);
-            }
-            else {
-                robot.led.setPosition(90)
+                robot.setRobotColor(BLUE);
+            } else {
+                robot.setRobotColor(ORANGE);
             }
 
 

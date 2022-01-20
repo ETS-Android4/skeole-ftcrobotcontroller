@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Systems;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import.com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -26,7 +26,8 @@ public class RobotHardware {
 
     private DistanceSensor dSensor;
     private DistanceSensor cubeSensor;
-    private NormalizedColorSensor cSensor;
+
+    public RevBlinkinLedDriver led;
 
     public HardwareMap map;
     public Tensorflow tf;
@@ -50,7 +51,6 @@ public class RobotHardware {
 
     public Servo rServo = null;
     public Servo lServo = null;
-    public Servo led = null;
 
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
@@ -72,9 +72,10 @@ public class RobotHardware {
         LF = hardwareMap.get(DcMotor.class, "leftFront");
         LB = hardwareMap.get(DcMotor.class, "leftBack");
 
-        cSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
         dSensor = hardwareMap.get(DistanceSensor.class, "sensor_distance");
-        cubeSensor = hardwareMap.get(DistanceSensor.class, "sensor_distance");
+        cubeSensor = hardwareMap.get(DistanceSensor.class, "sensor_cube");
+
+        led = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
 
         IN = hardwareMap.get(DcMotor.class, "intake");
         Duck = hardwareMap.get(DcMotor.class, "duckWheel");
@@ -82,7 +83,6 @@ public class RobotHardware {
 
         lServo = hardwareMap.get(Servo.class, "left");
         rServo = hardwareMap.get(Servo.class, "right");
-        led = hardwareMap.get(Servo.class, "lights");
 
         RF.setDirection(DcMotor.Direction.REVERSE);
         RB.setDirection(DcMotor.Direction.REVERSE);
@@ -93,12 +93,7 @@ public class RobotHardware {
         Duck.setDirection(DcMotor.Direction.REVERSE);
         Arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)cubeSensor; //might be unnecessary
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)dSensor;
-
-        if (cSensor instanceof SwitchableLight) {
-            ((SwitchableLight)cSensor).enableLight(true);
-        }
 
         telemetry.addData("Info", Arm);
         telemetry.addData("Status", "Robot Hardware Initialized");
@@ -185,12 +180,12 @@ public class RobotHardware {
         DriveWithEncoders();
     }
 
-    public double getGreen(){
-        return cSensor.getNormalizedColors().green;
+    public boolean seeIfObject() {
+        return (cubeSensor.getDistance(DistanceUnit.INCH) < 3);
     }
 
-    public boolean seeIfObject() {
-        return (cubeSensor.getDistance(DistanceUnit.INCH) < 2);
+    public void setRobotColor(RevBlinkinLedDriver.BlinkinPattern pattern){
+        blinkinLedDriver.setPattern(pattern);
     }
 
     public double getDistInch(){
