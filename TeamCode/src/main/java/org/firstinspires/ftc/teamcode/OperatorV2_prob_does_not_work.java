@@ -33,9 +33,9 @@ public class OperatorV2_prob_does_not_work extends LinearOpMode {
             robot.telemetry.update();
 
             if (robot.seeIfObject()) {
-                robot.setRobotColor(BLUE);
+                robot.setRobotColor("Blue");
             } else {
-                robot.setRobotColor(ORANGE);
+                robot.setRobotColor("Orange");
             }
 
 
